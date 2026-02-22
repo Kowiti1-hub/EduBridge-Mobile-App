@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-100 text-gray-900;
+  }
+}
+
+@layer components {
+  .whatsapp-bg {
+    background-color: #e5ddd5;
+    background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png");
+    background-blend-mode: overlay;
+    background-size: 400px;
+  }
+
+  .whatsapp-bubble-sent {
+    @apply bg-[#dcf8c6] text-[#303030] rounded-lg rounded-tr-none shadow-sm;
+  }
+
+  .whatsapp-bubble-received {
+    @apply bg-white text-[#303030] rounded-lg rounded-tl-none shadow-sm;
+  }
+
+  .ussd-container {
+    @apply bg-[#1a1a1a] text-emerald-400 font-mono p-4 rounded-lg border-2 border-emerald-900 shadow-2xl;
+  }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+.confetti {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  top: -10px;
+  z-index: 50;
+  animation: confetti-fall 3s linear infinite;
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}

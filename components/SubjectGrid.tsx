@@ -1,13 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
+import { Heart, ChevronRight, Star } from 'lucide-react';
 import { SUBJECTS } from '../constants';
-import { Subject } from '../types';
+import { Subject, LearningStage } from '../types';
 
 interface SubjectGridProps {
   onSelect: (subject: Subject) => void;
+  stage: LearningStage;
 }
 
-const SubjectGrid: React.FC<SubjectGridProps> = ({ onSelect }) => {
+const SubjectGrid: React.FC<SubjectGridProps> = ({ onSelect, stage }) => {
   const [favorites, setFavorites] = useState<string[]>([]);
 
   // Load favorites from localStorage on mount
@@ -34,8 +36,11 @@ const SubjectGrid: React.FC<SubjectGridProps> = ({ onSelect }) => {
     );
   };
 
+  // Filter subjects by stage
+  const stageSubjects = SUBJECTS.filter(s => s.stage === stage);
+
   // Sort subjects: favorites at the top, then by original order
-  const sortedSubjects = [...SUBJECTS].sort((a, b) => {
+  const sortedSubjects = [...stageSubjects].sort((a, b) => {
     const aFav = favorites.includes(a.id);
     const bFav = favorites.includes(b.id);
     if (aFav && !bFav) return -1;
@@ -47,13 +52,13 @@ const SubjectGrid: React.FC<SubjectGridProps> = ({ onSelect }) => {
     <div className="p-4 space-y-3">
       {sortedSubjects.map((subject) => {
         const isFavorite = favorites.includes(subject.id);
-        const originalIndex = SUBJECTS.findIndex(s => s.id === subject.id) + 1;
+        const originalIndex = stageSubjects.findIndex(s => s.id === subject.id) + 1;
         
         return (
-          <button
+          <div
             key={subject.id}
             onClick={() => onSelect(subject)}
-            className={`w-full p-4 rounded-2xl border transition-all duration-300 active:scale-[0.98] group text-left flex items-center gap-4 relative overflow-hidden ${
+            className={`w-full p-4 rounded-2xl border transition-all duration-300 active:scale-[0.98] cursor-pointer group text-left flex items-center gap-4 relative overflow-hidden ${
               isFavorite 
                 ? 'bg-amber-50 border-amber-200 shadow-md ring-1 ring-amber-100/50' 
                 : 'bg-white border-emerald-50 hover:shadow-md hover:border-emerald-200'
@@ -67,11 +72,11 @@ const SubjectGrid: React.FC<SubjectGridProps> = ({ onSelect }) => {
             {/* Icon Container with USSD Number Indicator */}
             <div className="relative">
               <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-inner ${
-                isFavorite ? 'bg-amber-100' : 'bg-emerald-50'
+                isFavorite ? 'bg-amber-100' : 'bg-[#e7fce3]'
               }`}>
                 {subject.icon}
               </div>
-              <div className="absolute -top-1 -left-1 w-5 h-5 bg-slate-800 text-white rounded-md flex items-center justify-center text-[10px] font-bold shadow-sm border border-slate-700">
+              <div className="absolute -top-1 -left-1 w-5 h-5 bg-[#075e54] text-white rounded-md flex items-center justify-center text-[10px] font-bold shadow-sm border border-[#054d44]">
                 {originalIndex}
               </div>
             </div>
@@ -104,31 +109,18 @@ const SubjectGrid: React.FC<SubjectGridProps> = ({ onSelect }) => {
                 }`}
                 aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
               >
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className={`h-5 w-5 ${isFavorite ? 'animate-in zoom-in-125' : ''}`}
-                  viewBox="0 0 24 24" 
-                  fill={isFavorite ? "currentColor" : "none"} 
-                  stroke="currentColor" 
-                  strokeWidth="2.5"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" 
-                  />
-                </svg>
+                <Heart 
+                  className={`h-5 w-5 ${isFavorite ? 'fill-current animate-in zoom-in-125' : ''}`}
+                />
               </button>
               
               <div className={`transition-colors ${
                 isFavorite ? 'text-amber-500' : 'text-emerald-200 group-hover:text-emerald-500'
               }`}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                </svg>
+                <ChevronRight className="h-5 w-5" />
               </div>
             </div>
-          </button>
+          </div>
         );
       })}
     </div>

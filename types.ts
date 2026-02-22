@@ -6,7 +6,16 @@ export enum MessageType {
   NOTE = 'note',
   LINK = 'link',
   AUDIO = 'audio',
-  IMAGE = 'image'
+  IMAGE = 'image',
+  TEST = 'test'
+}
+
+export enum LearningStage {
+  PRE_SCHOOL = 'Pre-School',
+  ELEMENTARY = 'Elementary',
+  PRIMARY = 'Primary',
+  SECONDARY = 'Secondary',
+  TERTIARY = 'Tertiary'
 }
 
 export interface Message {
@@ -24,6 +33,7 @@ export interface Message {
     imageData?: string; // Base64 encoded image
     duration?: number;  // Seconds
     isHighQuality?: boolean;
+    test?: Test;
   };
 }
 
@@ -32,12 +42,20 @@ export interface Subject {
   title: string;
   icon: string;
   description: string;
+  stage: LearningStage;
+}
+
+export interface Test {
+  question: string;
+  options: string[];
+  correctAnswer: number;
 }
 
 export interface LessonContent {
   title: string;
   theory: string;
   question: string;
+  test?: Test;
 }
 
 export interface LearningState {

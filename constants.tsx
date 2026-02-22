@@ -1,45 +1,41 @@
 import React from 'react';
-import { Subject } from './types';
+import { Subject, LearningStage } from './types';
 
 export const SUBJECTS: Subject[] = [
-  { id: 'math', title: 'Mathematics', icon: '📐', description: 'Algebra, Geometry, and Basic Arithmetic.' },
-  { id: 'science', title: 'Science', icon: '🧪', description: 'Biology, Physics, and Chemistry basics.' },
-  { id: 'english', title: 'English', icon: '📚', description: 'Grammar, Reading, and Writing skills.' },
-  { id: 'health', title: 'Health', icon: '🏥', description: 'Hygiene, Nutrition, and First Aid.' },
-  { id: 'finance', title: 'Financial Literacy', icon: '💰', description: 'Savings, Budgeting, and Basic Economics.' },
-  { id: 'history', title: 'History', icon: '🏛️', description: 'Learn about past events and civilizations.' },
-  { id: 'geography', title: 'Geography', icon: '🌍', description: "Explore Earth's features and human populations." },
-  { id: 'art', title: 'Art', icon: '🎨', description: 'Discover painting, sculpture, and creative expression.' }
+  // Pre-School
+  { id: 'ps-colors', title: 'Colors & Shapes', icon: '🎨', description: 'Basic identification of colors and geometric shapes.', stage: LearningStage.PRE_SCHOOL },
+  { id: 'ps-numbers', title: 'Counting 1-10', icon: '🔢', description: 'Introduction to numbers and basic counting.', stage: LearningStage.PRE_SCHOOL },
+  
+  // Elementary
+  { id: 'el-reading', title: 'Early Reading', icon: '📖', description: 'Phonics and simple sentence construction.', stage: LearningStage.ELEMENTARY },
+  { id: 'el-math', title: 'Basic Arithmetic', icon: '➕', description: 'Addition and subtraction for beginners.', stage: LearningStage.ELEMENTARY },
+  
+  // Primary
+  { id: 'pr-science', title: 'Natural Science', icon: '🌱', description: 'Plants, animals, and the environment.', stage: LearningStage.PRIMARY },
+  { id: 'pr-history', title: 'World History', icon: '📜', description: 'Ancient civilizations and key historical events.', stage: LearningStage.PRIMARY },
+  
+  // Secondary
+  { id: 'sc-physics', title: 'Physics', icon: '⚛️', description: 'Mechanics, energy, and matter.', stage: LearningStage.SECONDARY },
+  { id: 'sc-literature', title: 'World Literature', icon: '✍️', description: 'Classic novels and literary analysis.', stage: LearningStage.SECONDARY },
+  { id: 'sc-economics', title: 'Economics', icon: '📉', description: 'Supply, demand, and global markets.', stage: LearningStage.SECONDARY },
+  
+  // Tertiary (University/College/TVET)
+  { id: 'tr-compsci', title: 'Computer Science', icon: '💻', description: 'Programming, algorithms, and data structures.', stage: LearningStage.TERTIARY },
+  { id: 'tr-nursing', title: 'Nursing & Health', icon: '🩺', description: 'Patient care, anatomy, and medical ethics.', stage: LearningStage.TERTIARY },
+  { id: 'tr-engineering', title: 'Civil Engineering', icon: '🏗️', description: 'Infrastructure design and structural analysis.', stage: LearningStage.TERTIARY },
+  { id: 'tr-carpentry', title: 'Carpentry (TVET)', icon: '🔨', description: 'Woodworking, construction, and safety.', stage: LearningStage.TERTIARY },
+  { id: 'tr-marketing', title: 'Digital Marketing', icon: '📱', description: 'SEO, social media, and brand strategy.', stage: LearningStage.TERTIARY }
 ];
 
 export const USSD_MENU = `
 WELCOME TO EDUBRIDGE
 Reply with number:
-1. Mathematics
-2. Science
-3. English
-4. Health
-5. Financial Literacy
-6. History
-7. Geography
-8. Art
+1. Pre-School
+2. Elementary
+3. Primary
+4. Secondary
+5. Tertiary (Uni/College/TVET)
 0. Help
-
----------------------
-USSD HELP CENTER
----------------------
-COMMANDS:
-*123# - Main Menu
-*5#  - Attachment Menu
-*2#  - Previous Lesson
-0 or *0# - Help Guide
-1-8 - Select Subject
-"Next" - Next lesson
-"Menu" - Exit course
-
-HOW TO USE:
-1. Reply with a number.
-2. Voice/Images in *5# menu.
 `;
 
 export const HELP_MESSAGE = `
@@ -50,15 +46,14 @@ COMMANDS:
 *5#  - Attachment Menu
 *2#  - Previous Lesson
 0 or *0# - This Help Guide
-1-8 - Select Subject
 "Next" - Continue lesson
 "Menu" - Return to subjects
 
 HOW TO USE:
-1. Select a subject by number.
-2. Ask any question in chat.
-3. Use voice button for audio.
-4. "Attachment Menu" has Text, Links, Voice, and Images.
+1. Select your learning stage.
+2. Choose a subject.
+3. Complete lessons and tests.
+4. Use voice button for audio.
 
 EduBridge works on low-signal 2G/3G networks.
 `;

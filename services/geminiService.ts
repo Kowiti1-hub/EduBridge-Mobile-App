@@ -20,7 +20,8 @@ Guidelines:
 export const generateEducationalResponse = async (
   userMessage: string,
   history: Message[],
-  subject: string | null
+  subject: string | null,
+  isDataSaver: boolean = true
 ) => {
   const model = 'gemini-3-flash-preview';
   
@@ -35,12 +36,16 @@ export const generateEducationalResponse = async (
     parts: [{ text: userMessage }]
   });
 
+  const saverInstruction = isDataSaver 
+    ? "\nDATA SAVER ACTIVE: Keep responses extremely short and avoid complex formatting. Use plain text where possible." 
+    : "\nSTANDARD MODE: You can provide more detailed explanations and use richer markdown formatting.";
+
   try {
     const response = await ai.models.generateContent({
       model,
       contents,
       config: {
-        systemInstruction: SYSTEM_INSTRUCTION + (subject ? `\nCurrently teaching: ${subject}` : ""),
+        systemInstruction: SYSTEM_INSTRUCTION + (subject ? `\nCurrently teaching: ${subject}` : "") + saverInstruction,
         temperature: 0.7,
         topP: 0.95,
       },
@@ -75,9 +80,9 @@ export const summarizeTheory = async (theory: string) => {
   }
 };
 
-export const generateEducationalImage = async (prompt: string, subject: string | null) => {
+export const generateEducationalImage = async (prompt: string, subject: string | null, isDataSaver: boolean = true) => {
   const model = 'gemini-2.5-flash-image';
-  const enhancedPrompt = `A simple, clear educational diagram or icon for a student learning ${subject || 'general knowledge'}. Topic: ${prompt}. Style: Clean, high-contrast, educational graphic, white background, minimalist, easy to understand.`;
+  const enhancedPrompt = `A simple, clear educational diagram or icon for a student learning ${subject || 'general knowledge'}. Topic: ${prompt}. Style: Clean, high-contrast, educational graphic, white background, minimalist, easy to understand. ${isDataSaver ? 'Keep the image very simple with few colors to optimize for low bandwidth.' : ''}`;
   
   try {
     const response = await ai.models.generateContent({

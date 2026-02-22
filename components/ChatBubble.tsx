@@ -1,10 +1,12 @@
 
 import React, { useState, useRef, useEffect } from 'react';
+import { Play, Pause, Share2, Check, CheckCheck } from 'lucide-react';
 import { Message, MessageType } from '../types';
 
 interface ChatBubbleProps {
   message: Message;
   onShare?: (message: Message) => void;
+  onTestAnswer?: (answerIndex: number) => void;
 }
 
 const ProgressBar: React.FC<{ current: number; total: number; isComplete?: boolean }> = ({ current, total, isComplete }) => {
@@ -46,7 +48,7 @@ const VoicePlayer: React.FC<{ data: string; duration: number }> = ({ data, durat
     <div className="flex flex-col gap-2 min-w-[240px] p-1">
       <div className="flex items-center gap-3">
         <button onClick={togglePlay} className="w-10 h-10 bg-emerald-500 text-white rounded-full flex items-center justify-center shadow-md active:scale-90 transition-transform flex-shrink-0">
-          {isPlaying ? <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg> : <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>}
+          {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6 ml-1" />}
         </button>
         <div className="flex-1 flex flex-col gap-1.5">
           <input type="range" min="0" max="100" value={progress} readOnly className="w-full h-1.5 bg-emerald-100 rounded-full appearance-none accent-emerald-500" />
@@ -119,21 +121,65 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ message, onShare }) => {
       );
     }
 
+    if (message.type === MessageType.TEST && message.metadata?.test) {
+      const test = message.metadata.test;
+      return (
+        <div className="space-y-3 p-1">
+          <div className="font-bold text-emerald-900">📝 KNOWLEDGE CHECK</div>
+          <p className="text-gray-800 font-medium">{test.question}</p>
+          <div className="grid gap-2">
+            {test.options.map((option, idx) => (
+              <button
+                key={idx}
+                onClick={() => onTestAnswer?.(idx)}
+                className="w-full text-left p-3 rounded-xl border border-emerald-100 bg-emerald-50/50 hover:bg-emerald-100 transition-colors text-xs font-medium active:scale-[0.98]"
+              >
+                <span className="inline-block w-5 h-5 rounded-full bg-emerald-200 text-emerald-800 text-[10px] font-bold text-center leading-5 mr-2">
+                  {String.fromCharCode(65 + idx)}
+                </span>
+                {option}
+              </button>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
     return <div className="leading-relaxed whitespace-pre-wrap">{message.content}</div>;
   };
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3 animate-in fade-in slide-in-from-bottom-2`}>
-      <div className={`max-w-[85%] px-4 py-2 rounded-2xl shadow-sm text-sm relative ${isUser ? 'bg-emerald-100 text-emerald-900 rounded-tr-none' : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'} ${message.isUssd ? 'font-mono border-2 border-emerald-500 bg-slate-900 text-emerald-400' : ''}`}>
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3 animate-in fade-in slide-in-from-bottom-2 px-2`}>
+      <div className={`max-w-[85%] px-3 py-1.5 rounded-xl shadow-sm text-sm relative ${
+        isUser 
+          ? 'bg-[#dcf8c6] text-[#303030] rounded-tr-none' 
+          : 'bg-white text-[#303030] rounded-tl-none border border-gray-100'
+      } ${message.isUssd ? 'font-mono border-2 border-emerald-500 bg-slate-900 text-emerald-400 !rounded-none' : ''}`}>
+        
+        {/* Triangular tail for WhatsApp look */}
+        {!message.isUssd && (
+          <div className={`absolute top-0 w-0 h-0 border-t-[10px] border-t-transparent ${
+            isUser 
+              ? 'right-[-8px] border-l-[10px] border-l-[#dcf8c6]' 
+              : 'left-[-8px] border-r-[10px] border-r-white'
+          }`} />
+        )}
+
         {renderContent()}
-        <div className="text-[10px] text-gray-400 mt-2 text-right flex items-center justify-end gap-2">
+        
+        <div className="text-[10px] text-gray-400 mt-1 text-right flex items-center justify-end gap-1">
           {isBot && onShare && (
-            <button onClick={() => onShare(message)} className="text-emerald-700 hover:bg-emerald-200 font-bold flex items-center gap-1.5 bg-emerald-50 px-2 py-1 rounded-full transition-all active:scale-95 border border-emerald-100">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
+            <button onClick={() => onShare(message)} className="text-emerald-700 hover:bg-emerald-200 font-bold flex items-center gap-1 bg-emerald-50 px-1.5 py-0.5 rounded-full transition-all active:scale-95 border border-emerald-100 mr-1">
+              <Share2 className="h-2.5 w-2.5" />
               Share
             </button>
           )}
           <span>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          {isUser && (
+            <span className="text-blue-400 flex">
+              <CheckCheck className="h-3 w-3" />
+            </span>
+          )}
         </div>
       </div>
     </div>
